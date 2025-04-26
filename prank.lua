@@ -1,12 +1,11 @@
--- Slap Tower Freeze PRO + Anti-Detect
+-- Slap Tower Freeze PRO - Touched Version
 -- Made by ChatGPT | 2025
 
 -- Variables
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
-local RunService = game:GetService("RunService")
+local freezeDuration = 30 -- Freeze 30 detik
 local slapToolName = "Hand"
-local freezeDuration = 30 -- << Durasi Freeze diubah ke 30 detik
 
 -- Create GUI
 local ScreenGui = Instance.new("ScreenGui")
@@ -84,22 +83,8 @@ AntiDetectToggle.MouseButton1Click:Connect(function()
     end
 end)
 
--- Highlight Function
-local function highlightPlayer(target)
-    if target and target.Character then
-        local highlight = Instance.new("Highlight", target.Character)
-        highlight.FillColor = Color3.fromRGB(0,255,255)
-        highlight.OutlineColor = Color3.fromRGB(255,255,255)
-        task.delay(freezeDuration, function()
-            if highlight then
-                highlight:Destroy()
-            end
-        end)
-    end
-end
-
--- AntiDetect Full Logic
-RunService.RenderStepped:Connect(function()
+-- Anti-Detect Full Logic
+game:GetService("RunService").RenderStepped:Connect(function()
     if antiDetectEnabled then
         pcall(function()
             for _, v in pairs(workspace:GetDescendants()) do
@@ -118,38 +103,41 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
--- Slap Detection Logic
-LocalPlayer.CharacterAdded:Connect(function(char)
-    local function slap()
-        local tool = char:FindFirstChildOfClass("Tool")
-        if tool and tool.Name == slapToolName then
-            tool.Activated:Connect(function()
+-- Highlight Function
+local function highlightPlayer(target)
+    if target and target.Character then
+        local highlight = Instance.new("Highlight", target.Character)
+        highlight.FillColor = Color3.fromRGB(0,255,255)
+        highlight.OutlineColor = Color3.fromRGB(255,255,255)
+        task.delay(freezeDuration, function()
+            if highlight then
+                highlight:Destroy()
+            end
+        end)
+    end
+end
+
+-- Main Slap Freeze Logic
+local function setupTouched()
+    local char = LocalPlayer.Character
+    if not char then return end
+
+    local tool = char:FindFirstChildOfClass("Tool")
+    if tool and tool.Name == slapToolName then
+        local handle = tool:FindFirstChild("Handle") or tool:FindFirstChildWhichIsA("Part")
+        if handle then
+            handle.Touched:Connect(function(hit)
                 if not freezeEnabled then return end
-                local target = nil
-                local dist = math.huge
-                for _, v in pairs(Players:GetPlayers()) do
-                    if v ~= LocalPlayer and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
-                        local mag = (v.Character.HumanoidRootPart.Position - char.HumanoidRootPart.Position).magnitude
-                        if mag < 10 and mag < dist then
-                            dist = mag
-                            target = v
-                        end
-                    end
-                end
-                if target then
-                    local humanoid = target.Character:FindFirstChildWhichIsA("Humanoid")
+                local targetPlayer = Players:GetPlayerFromCharacter(hit.Parent)
+                if targetPlayer and targetPlayer ~= LocalPlayer then
+                    local humanoid = targetPlayer.Character and targetPlayer.Character:FindFirstChildWhichIsA("Humanoid")
                     if humanoid then
                         -- Freeze
                         humanoid.WalkSpeed = 0
                         humanoid.JumpPower = 0
-                        -- Highlight Target
-                        highlightPlayer(target)
-                        -- Destroy Tool if any
-                        local toolTarget = target.Character:FindFirstChildOfClass("Tool")
-                        if toolTarget then toolTarget:Destroy() end
-                        -- Update Status
-                        StatusLabel.Text = "Status: Slapped "..target.Name
-                        -- Unfreeze after custom duration
+                        highlightPlayer(targetPlayer)
+                        StatusLabel.Text = "Status: Freezed "..targetPlayer.Name
+                        -- Unfreeze after 30 detik
                         task.delay(freezeDuration, function()
                             if humanoid then
                                 humanoid.WalkSpeed = 16
@@ -161,7 +149,15 @@ LocalPlayer.CharacterAdded:Connect(function(char)
             end)
         end
     end
-    slap()
+end
+
+-- Auto Setup
+LocalPlayer.CharacterAdded:Connect(function()
+    task.wait(2) -- Kasih waktu loading tools
+    setupTouched()
 end)
 
--- End
+if LocalPlayer.Character then
+    task.wait(2)
+    setupTouched()
+end
