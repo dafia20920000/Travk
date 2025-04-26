@@ -1,168 +1,167 @@
--- Anti Kick (Otomatis aktif)
-local mt = getrawmetatable(game)
-setreadonly(mt, false)
-local old = mt.__namecall
-mt.__namecall = newcclosure(function(self, ...)
-    local method = getnamecallmethod()
-    if tostring(method):lower() == "kick" then
-        warn("Anti-Kick Activated: Kick attempt blocked.")
-        return wait(9e9)
-    end
-    return old(self, ...)
-end)
-setreadonly(mt, true)
+-- Slap Tower Freeze PRO + Anti-Detect
+-- Made by ChatGPT | 2025
 
--- GUI Setup
-local screenGui = Instance.new("ScreenGui", game.CoreGui)
-screenGui.Name = "PrankHub"
+-- Variables
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local RunService = game:GetService("RunService")
+local slapToolName = "Hand"
+local freezeDuration = 30 -- << Durasi Freeze diubah ke 30 detik
 
-local frame = Instance.new("Frame", screenGui)
-frame.Size = UDim2.new(0, 300, 0, 300)
-frame.Position = UDim2.new(0.5, -150, 0.5, -150)
-frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+-- Create GUI
+local ScreenGui = Instance.new("ScreenGui")
+local OpenButton = Instance.new("TextButton")
+local MainFrame = Instance.new("Frame")
+local FreezeToggle = Instance.new("TextButton")
+local AntiDetectToggle = Instance.new("TextButton")
+local StatusLabel = Instance.new("TextLabel")
 
-local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1, 0, 0, 50)
-title.Text = "Rusuh Hub"
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-title.TextScaled = true
+ScreenGui.Name = "GUI_"..math.random(10000,99999)
+ScreenGui.Parent = game:GetService("CoreGui")
 
--- Tombol Freeze All
-local freezeButton = Instance.new("TextButton", frame)
-freezeButton.Size = UDim2.new(1, 0, 0, 40)
-freezeButton.Position = UDim2.new(0, 0, 0.2, 0)
-freezeButton.Text = "Freeze All"
-freezeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-freezeButton.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
-freezeButton.MouseButton1Click:Connect(function()
-    for _, player in pairs(game.Players:GetPlayers()) do
-        if player.Character then
-            player.Character.HumanoidRootPart.Anchored = true
-        end
-    end
-end)
+OpenButton.Name = "OpenButton"
+OpenButton.Parent = ScreenGui
+OpenButton.BackgroundColor3 = Color3.fromRGB(0, 255, 127)
+OpenButton.Position = UDim2.new(0, 10, 0, 10)
+OpenButton.Size = UDim2.new(0, 100, 0, 40)
+OpenButton.Text = "Open GUI"
+OpenButton.Visible = true
 
--- Tombol Spam Sound
-local soundButton = Instance.new("TextButton", frame)
-soundButton.Size = UDim2.new(1, 0, 0, 40)
-soundButton.Position = UDim2.new(0, 0, 0.4, 0)
-soundButton.Text = "Spam Sound"
-soundButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-soundButton.BackgroundColor3 = Color3.fromRGB(0, 0, 200)
-soundButton.MouseButton1Click:Connect(function()
-    for i = 1, 10 do
-        local sound = Instance.new("Sound", workspace)
-        sound.SoundId = "rbxassetid://9118829864"
-        sound.Volume = 10
-        sound:Play()
-    end
-end)
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+MainFrame.Position = UDim2.new(0, 10, 0, 60)
+MainFrame.Size = UDim2.new(0, 250, 0, 220)
+MainFrame.Visible = false
 
--- Tombol Lag Maker
-local lagButton = Instance.new("TextButton", frame)
-lagButton.Size = UDim2.new(1, 0, 0, 40)
-lagButton.Position = UDim2.new(0, 0, 0.6, 0)
-lagButton.Text = "Lag Maker"
-lagButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-lagButton.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
-lagButton.MouseButton1Click:Connect(function()
-    for i = 1, 500 do
-        local part = Instance.new("Part", workspace)
-        part.Size = Vector3.new(999,999,999)
-        part.Anchored = true
-        part.Position = Vector3.new(math.random(1,100), 100, math.random(1,100))
-    end
+FreezeToggle.Name = "FreezeToggle"
+FreezeToggle.Parent = MainFrame
+FreezeToggle.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+FreezeToggle.Position = UDim2.new(0, 25, 0, 30)
+FreezeToggle.Size = UDim2.new(0, 200, 0, 50)
+FreezeToggle.Text = "Freeze ON"
+
+AntiDetectToggle.Name = "AntiDetectToggle"
+AntiDetectToggle.Parent = MainFrame
+AntiDetectToggle.BackgroundColor3 = Color3.fromRGB(255, 170, 0)
+AntiDetectToggle.Position = UDim2.new(0, 25, 0, 100)
+AntiDetectToggle.Size = UDim2.new(0, 200, 0, 50)
+AntiDetectToggle.Text = "AntiDetect OFF"
+
+StatusLabel.Name = "StatusLabel"
+StatusLabel.Parent = MainFrame
+StatusLabel.BackgroundTransparency = 1
+StatusLabel.Position = UDim2.new(0, 0, 0, 170)
+StatusLabel.Size = UDim2.new(1, 0, 0, 30)
+StatusLabel.Text = "Status: Standby"
+StatusLabel.TextColor3 = Color3.fromRGB(255,255,255)
+StatusLabel.TextScaled = true
+
+-- States
+local freezeEnabled = true
+local antiDetectEnabled = false
+
+-- Button Logic
+OpenButton.MouseButton1Click:Connect(function()
+    MainFrame.Visible = not MainFrame.Visible
 end)
 
--- Tombol Chat Spam
-local chatButton = Instance.new("TextButton", frame)
-chatButton.Size = UDim2.new(1, 0, 0, 40)
-chatButton.Position = UDim2.new(0, 0, 0.8, 0)
-chatButton.Text = "Chat Spam"
-chatButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-chatButton.BackgroundColor3 = Color3.fromRGB(200, 200, 0)
-chatButton.MouseButton1Click:Connect(function()
-    while true do
-        wait(0.2)
-        game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("HAHAHA FREEZE SEMUA!", "All")
+FreezeToggle.MouseButton1Click:Connect(function()
+    freezeEnabled = not freezeEnabled
+    if freezeEnabled then
+        FreezeToggle.Text = "Freeze ON"
+    else
+        FreezeToggle.Text = "Freeze OFF"
     end
 end)
 
--- Tombol BSOD
-local bsodButton = Instance.new("TextButton", frame)
-bsodButton.Size = UDim2.new(1, 0, 0, 40)
-bsodButton.Position = UDim2.new(0, 0, 1, 0)
-bsodButton.Text = "BSOD Screen"
-bsodButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-bsodButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-bsodButton.MouseButton1Click:Connect(function()
-    local bsod = Instance.new("ScreenGui", game.CoreGui)
-    local label = Instance.new("TextLabel", bsod)
-    label.Size = UDim2.new(1, 0, 1, 0)
-    label.Text = ":(  Your Roblox has encountered an error and needs to close.\nPlease wait..."
-    label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    label.BackgroundColor3 = Color3.fromRGB(0, 0, 255)
-    label.TextScaled = true
+AntiDetectToggle.MouseButton1Click:Connect(function()
+    antiDetectEnabled = not antiDetectEnabled
+    if antiDetectEnabled then
+        AntiDetectToggle.Text = "AntiDetect ON"
+    else
+        AntiDetectToggle.Text = "AntiDetect OFF"
+    end
 end)
 
--- Tombol Kill Without Touch
-local killButton = Instance.new("TextButton", frame)
-killButton.Size = UDim2.new(1, 0, 0, 40)
-killButton.Position = UDim2.new(0, 0, 1.2, 0)
-killButton.Text = "Kill Without Touch"
-killButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-killButton.BackgroundColor3 = Color3.fromRGB(255, 100, 100)
-killButton.MouseButton1Click:Connect(function()
-    local swordRange = 100
-    local function killNearbyPlayers()
-        local players = game.Players:GetPlayers()
-        for _, player in pairs(players) do
-            if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-                local character = player.Character
-                local humanoid = character:FindFirstChildOfClass("Humanoid")
-                if humanoid then
-                    local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - character.HumanoidRootPart.Position).Magnitude
-                    if distance <= swordRange then
-                        humanoid.Health = 0
+-- Highlight Function
+local function highlightPlayer(target)
+    if target and target.Character then
+        local highlight = Instance.new("Highlight", target.Character)
+        highlight.FillColor = Color3.fromRGB(0,255,255)
+        highlight.OutlineColor = Color3.fromRGB(255,255,255)
+        task.delay(freezeDuration, function()
+            if highlight then
+                highlight:Destroy()
+            end
+        end)
+    end
+end
+
+-- AntiDetect Full Logic
+RunService.RenderStepped:Connect(function()
+    if antiDetectEnabled then
+        pcall(function()
+            for _, v in pairs(workspace:GetDescendants()) do
+                if v:IsA("Script") or v:IsA("LocalScript") then
+                    if v.Name:lower():find("detection") or v.Name:lower():find("ban") or v.Name:lower():find("log") then
+                        v:Destroy()
                     end
                 end
             end
-        end
-    end
-    while true do
-        killNearbyPlayers()
-        wait(1)
+            for _, v in pairs(getgc(true)) do
+                if typeof(v) == "table" and rawget(v, "Detected") then
+                    rawset(v, "Detected", false)
+                end
+            end
+        end)
     end
 end)
 
--- Tombol Fly
-local flyButton = Instance.new("TextButton", frame)
-flyButton.Size = UDim2.new(1, 0, 0, 40)
-flyButton.Position = UDim2.new(0, 0, 1.4, 0)
-flyButton.Text = "Fly"
-flyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-flyButton.BackgroundColor3 = Color3.fromRGB(0, 255, 255)
-flyButton.MouseButton1Click:Connect(function()
-    local player = game.Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    local humanoid = character:WaitForChild("Humanoid")
-    
-    local bodyVelocity = Instance.new("BodyVelocity")
-    bodyVelocity.MaxForce = Vector3.new(100000, 100000, 100000)
-    bodyVelocity.Velocity = Vector3.new(0, 50, 0)
-    bodyVelocity.Parent = character:WaitForChild("HumanoidRootPart")
-
-    local flying = true
-    flyButton.Text = "Stop Fly"
-    flyButton.MouseButton1Click:Connect(function()
-        if flying then
-            bodyVelocity:Destroy()
-            flyButton.Text = "Fly"
-        else
-            bodyVelocity.Parent = character.HumanoidRootPart
-            flyButton.Text = "Stop Fly"
+-- Slap Detection Logic
+LocalPlayer.CharacterAdded:Connect(function(char)
+    local function slap()
+        local tool = char:FindFirstChildOfClass("Tool")
+        if tool and tool.Name == slapToolName then
+            tool.Activated:Connect(function()
+                if not freezeEnabled then return end
+                local target = nil
+                local dist = math.huge
+                for _, v in pairs(Players:GetPlayers()) do
+                    if v ~= LocalPlayer and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
+                        local mag = (v.Character.HumanoidRootPart.Position - char.HumanoidRootPart.Position).magnitude
+                        if mag < 10 and mag < dist then
+                            dist = mag
+                            target = v
+                        end
+                    end
+                end
+                if target then
+                    local humanoid = target.Character:FindFirstChildWhichIsA("Humanoid")
+                    if humanoid then
+                        -- Freeze
+                        humanoid.WalkSpeed = 0
+                        humanoid.JumpPower = 0
+                        -- Highlight Target
+                        highlightPlayer(target)
+                        -- Destroy Tool if any
+                        local toolTarget = target.Character:FindFirstChildOfClass("Tool")
+                        if toolTarget then toolTarget:Destroy() end
+                        -- Update Status
+                        StatusLabel.Text = "Status: Slapped "..target.Name
+                        -- Unfreeze after custom duration
+                        task.delay(freezeDuration, function()
+                            if humanoid then
+                                humanoid.WalkSpeed = 16
+                                humanoid.JumpPower = 50
+                            end
+                        end)
+                    end
+                end
+            end)
         end
-        flying = not flying
-    end)
+    end
+    slap()
 end)
+
+-- End
