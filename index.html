@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>⚠️ Warning!</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            touch-action: none;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        #locked-text {
+            font-size: 3rem;
+            font-weight: bold;
+            text-shadow: 0 0 10px currentColor;
+            animation: glitch 1s infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes glitch {
+            0%, 100% { color: red; transform: skew(0deg); }
+            20% { color: #0ff; transform: skew(-5deg); }
+            40% { color: #f0f; transform: skew(3deg); }
+            60% { color: yellow; transform: skew(-2deg); }
+            80% { color: lime; transform: skew(4deg); }
+        }
+        input {
+            padding: 12px;
+            margin: 15px;
+            width: 80%;
+            font-size: 16px;
+            background: #111;
+            color: white;
+            border: 1px solid #333;
+        }
+        button {
+            padding: 12px 24px;
+            background: linear-gradient(45deg, #ff0000, #ff4500);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: linear-gradient(45deg, #ff4500, #ff0000);
+        }
+        .hint {
+            color: #666;
+            font-size: 14px;
+            margin-top: 30px;
+            font-style: italic;
+        }
+        
+        /* Success Animation */
+        .success-animation {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+        .checkmark {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: block;
+            stroke-width: 5;
+            stroke: #4bb71b;
+            stroke-miterlimit: 10;
+            margin: 10% auto;
+            box-shadow: 0 0 0 rgba(75, 183, 27, 0.4);
+            animation: checkmark 0.6s ease-in-out, checkmark-fill 0.4s ease-in-out 0.4s forwards;
+        }
+        .checkmark-circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-width: 5;
+            stroke-miterlimit: 10;
+            stroke: #4bb71b;
+            fill: none;
+            animation: checkmark-circle 0.6s ease-in-out forwards;
+        }
+        .checkmark-check {
+            transform-origin: 50% 50%;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: checkmark-check 0.3s ease-in-out 0.8s forwards;
+        }
+        @keyframes checkmark {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes checkmark-circle {
+            0% { stroke-dashoffset: 166; }
+            100% { stroke-dashoffset: 0; }
+        }
+        @keyframes checkmark-check {
+            0% { stroke-dashoffset: 48; }
+            100% { stroke-dashoffset: 0; }
+        }
+        @keyframes checkmark-fill {
+            0% { box-shadow: inset 0 0 0 100px rgba(75, 183, 27, 0); }
+            100% { box-shadow: inset 0 0 0 100px rgba(75, 183, 27, 0.1); }
+        }
+        .success-text {
+            color: #4bb71b;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-top: 20px;
+            animation: fadeIn 1s ease-in;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div id="lock-screen">
+        <div id="locked-text">⚠️ TERKUNCI! ⚠️</div>
+        <p>Masukkan password <strong>"dafian12"</strong> untuk keluar:</p>
+        <input type="text" id="password" placeholder="Password..." spellcheck="false">
+        <button onclick="unlock()">UNLOCK</button>
+        <p class="hint">(Tekan Volume Atas + Power jika tidak bisa keluar!)</p>
+    </div>
+
+    <div id="success-screen" class="success-animation">
+        <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+            <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+            <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+        </svg>
+        <div class="success-text">Success Unlock Phone</div>
+    </div>
+
+    <script>
+        // Glitch effect enhancement
+        const glitchText = document.getElementById('locked-text');
+        setInterval(() => {
+            glitchText.style.animation = 'none';
+            void glitchText.offsetWidth; // Trigger reflow
+            glitchText.style.animation = 'glitch 0.8s infinite';
+        }, 3000);
+
+        // Block browser navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' || e.key === 'Escape') {
+                e.preventDefault();
+                document.getElementById('locked-text').textContent = "❌ AKSES DITOLAK!";
+                setTimeout(() => {
+                    document.getElementById('locked-text').textContent = "⚠️ TERKUNCI! ⚠️";
+                }, 1000);
+            }
+        });
+
+        // Fullscreen
+        document.documentElement.requestFullscreen().catch(e => {});
+
+        function unlock() {
+            if (document.getElementById('password').value === "dafian12") {
+                document.getElementById('lock-screen').style.display = 'none';
+                document.getElementById('success-screen').style.display = 'flex';
+                
+                setTimeout(() => {
+                    document.exitFullscreen();
+                }, 2000);
+            } else {
+                document.getElementById('locked-text').textContent = "✖ PASSWORD SALAH!";
+                document.getElementById('locked-text').style.color = "red";
+                setTimeout(() => {
+                    document.getElementById('locked-text').textContent = "⚠️ TERKUNCI! ⚠️";
+                }, 1000);
+            }
+        }
+    </script>
+</body>
+</html>
