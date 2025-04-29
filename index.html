@@ -5,16 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>⚠️ Warning!</title>
     <style>
-        body {
+        html, body {
             margin: 0;
             padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            touch-action: none;
+        }
+        body {
             background: #000;
             color: #fff;
             font-family: Arial, sans-serif;
             text-align: center;
-            touch-action: none;
-            overflow: hidden;
-            height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -38,6 +41,7 @@
             padding: 12px;
             margin: 15px;
             width: 80%;
+            max-width: 300px;
             font-size: 16px;
             background: #111;
             color: white;
@@ -68,6 +72,14 @@
             display: none;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 100;
         }
         .checkmark {
             width: 100px;
@@ -77,7 +89,7 @@
             stroke-width: 5;
             stroke: #4bb71b;
             stroke-miterlimit: 10;
-            margin: 10% auto;
+            margin: 0 auto;
             box-shadow: 0 0 0 rgba(75, 183, 27, 0.4);
             animation: checkmark 0.6s ease-in-out, checkmark-fill 0.4s ease-in-out 0.4s forwards;
         }
@@ -143,13 +155,19 @@
     </div>
 
     <script>
-        // Glitch effect enhancement
-        const glitchText = document.getElementById('locked-text');
-        setInterval(() => {
-            glitchText.style.animation = 'none';
-            void glitchText.offsetWidth; // Trigger reflow
-            glitchText.style.animation = 'glitch 0.8s infinite';
-        }, 3000);
+        // Force fullscreen on load
+        function enterFullscreen() {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen().catch(err => {
+                    console.error("Fullscreen error:", err);
+                });
+            } else if (elem.webkitRequestFullscreen) { /* Safari */
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { /* IE11 */
+                elem.msRequestFullscreen();
+            }
+        }
 
         // Block browser navigation
         document.addEventListener('keydown', (e) => {
@@ -162,8 +180,17 @@
             }
         });
 
-        // Fullscreen
-        document.documentElement.requestFullscreen().catch(e => {});
+        // Glitch effect enhancement
+        const glitchText = document.getElementById('locked-text');
+        setInterval(() => {
+            glitchText.style.animation = 'none';
+            void glitchText.offsetWidth; // Trigger reflow
+            glitchText.style.animation = 'glitch 0.8s infinite';
+        }, 3000);
+
+        // Fullscreen on load
+        window.addEventListener('load', enterFullscreen);
+        document.addEventListener('click', enterFullscreen); // Mobile fallback
 
         function unlock() {
             if (document.getElementById('password').value === "dafian12") {
@@ -171,13 +198,20 @@
                 document.getElementById('success-screen').style.display = 'flex';
                 
                 setTimeout(() => {
-                    document.exitFullscreen();
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.webkitExitFullscreen) { /* Safari */
+                        document.webkitExitFullscreen();
+                    } else if (document.msExitFullscreen) { /* IE11 */
+                        document.msExitFullscreen();
+                    }
                 }, 2000);
             } else {
                 document.getElementById('locked-text').textContent = "✖ PASSWORD SALAH!";
                 document.getElementById('locked-text').style.color = "red";
                 setTimeout(() => {
                     document.getElementById('locked-text').textContent = "⚠️ TERKUNCI! ⚠️";
+                    document.getElementById('locked-text').style.color = "";
                 }, 1000);
             }
         }
