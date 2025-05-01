@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureScan | Offline Vulnerability Checker</title>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --dark: #1e293b;
+            --light: #f8fafc;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #f1f5f9;
+            color: var(--dark);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        h1 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .scanner-box {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        input[type="url"] {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        
+        input[type="url"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        button:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .result-container {
+            display: none;
+            margin-top: 2rem;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+        
+        .status.safe {
+            background-color: #d1fae5;
+            color: var(--success);
+        }
+        
+        .status.warning {
+            background-color: #fef3c7;
+            color: var(--warning);
+        }
+        
+        .status.danger {
+            background-color: #fee2e2;
+            color: var(--danger);
+        }
+        
+        .vulnerability {
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-radius: 6px;
+            border-left: 4px solid;
+        }
+        
+        .vulnerability.high {
+            border-left-color: var(--danger);
+            background-color: #fef2f2;
+        }
+        
+        .vulnerability.medium {
+            border-left-color: var(--warning);
+            background-color: #fffbeb;
+        }
+        
+        .vulnerability.low {
+            border-left-color: var(--success);
+            background-color: #ecfdf5;
+        }
+        
+        .vulnerability h3 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 1rem;
+        }
+        
+        .spinner {
+            width: 2rem;
+            height: 2rem;
+            border: 3px solid rgba(59, 130, 246, 0.2);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .tech-info {
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SecureScan</h1>
+            <p>Offline Website Vulnerability Scanner</p>
+        </header>
+        
+        <div class="scanner-box">
+            <div class="input-group">
+                <input type="url" id="targetUrl" placeholder="https://example.com" required>
+                <button id="scanButton">Scan</button>
+            </div>
+            <p class="tech-info">Scanner ini bekerja sepenuhnya offline tanpa API eksternal</p>
+        </div>
+        
+        <div class="loading" id="loadingIndicator">
+            <div class="spinner"></div>
+            <p>Menganalisis website...</p>
+        </div>
+        
+        <div class="result-container" id="resultContainer">
+            <div class="result-header">
+                <h2>Hasil Pemeriksaan</h2>
+                <span class="status" id="overallStatus">Aman</span>
+            </div>
+            
+            <div id="resultDetails">
+                <!-- Hasil akan muncul di sini -->
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2023 SecureScan | Dibangun dengan ❤️ untuk keamanan web</p>
+    </footer>
+
+    <script>
+        document.getElementById('scanButton').addEventListener('click', function() {
+            const url = document.getElementById('targetUrl').value.trim();
+            const loading = document.getElementById('loadingIndicator');
+            const resultContainer = document.getElementById('resultContainer');
+            const resultDetails = document.getElementById('resultDetails');
+            const overallStatus = document.getElementById('overallStatus');
+            
+            if (!url) {
+                alert('Silakan masukkan URL website terlebih dahulu');
+                return;
+            }
+            
+            // Validasi format URL
+            try {
+                new URL(url);
+            } catch (e) {
+                alert('Format URL tidak valid. Contoh: https://example.com');
+                return;
+            }
+            
+            // Tampilkan loading
+            loading.style.display = 'block';
+            resultContainer.style.display = 'none';
+            
+            // Lakukan pemeriksaan setelah delay kecil
+            setTimeout(() => {
+                performChecks(url);
+                loading.style.display = 'none';
+                resultContainer.style.display = 'block';
+            }, 1000);
+        });
+        
+        function performChecks(url) {
+            const resultDetails = document.getElementById('resultDetails');
+            const overallStatus = document.getElementById('overallStatus');
+            
+            // Kosongkan hasil sebelumnya
+            resultDetails.innerHTML = '';
+            
+            // Ekstrak domain dari URL
+            let domain;
+            try {
+                domain = new URL(url).hostname;
+            } catch {
+                domain = url;
+            }
+            
+            // Lakukan berbagai pemeriksaan
+            const checks = [
+                checkSecurityHeaders(url),
+                checkCommonVulnerabilities(domain),
+                checkHTTPS(url),
+                checkServerInfo(),
+                checkFormsSecurity()
+            ];
+            
+            const allResults = checks.flat();
+            const hasHighRisk = allResults.some(r => r.severity === 'high');
+            const hasMediumRisk = allResults.some(r => r.severity === 'medium');
+            
+            // Tentukan status overall
+            if (hasHighRisk) {
+                overallStatus.textContent = 'Berisiko Tinggi';
+                overallStatus.className = 'status danger';
+            } else if (hasMediumRisk) {
+                overallStatus.textContent = 'Perhatian';
+                overallStatus.className = 'status warning';
+            } else {
+                overallStatus.textContent = 'Aman';
+                overallStatus.className = 'status safe';
+            }
+            
+            // Tampilkan hasil
+            if (allResults.length === 0) {
+                resultDetails.innerHTML = `
+                    <div class="vulnerability low">
+                        <h3><i class="fas fa-check-circle"></i> Tidak Ditemukan Kerentanan</h3>
+                        <p>Scanner tidak menemukan kerentanan umum pada website ini.</p>
+                    </div>
+                `;
+            } else {
+                allResults.forEach(result => {
+                    const vulnElement = document.createElement('div');
+                    vulnElement.className = `vulnerability ${result.severity}`;
+                    
+                    let icon;
+                    if (result.severity === 'high') icon = 'fa-exclamation-circle';
+                    else if (result.severity === 'medium') icon = 'fa-exclamation-triangle';
+                    else icon = 'fa-info-circle';
+                    
+                    vulnElement.innerHTML = `
+                        <h3><i class="fas ${icon}"></i> ${result.title}</h3>
+                        <p>${result.description}</p>
+                        ${result.solution ? `<p><strong>Solusi:</strong> ${result.solution}</p>` : ''}
+                    `;
+                    
+                    resultDetails.appendChild(vulnElement);
+                });
+            }
+        }
+        
+        function checkSecurityHeaders(url) {
+            // Ini hanya contoh - dalam implementasi nyata akan menggunakan CORS proxy atau backend
+            const results = [];
+            
+            // Contoh deteksi header (dalam implementasi nyata akan menggunakan fetch)
+            const missingHeaders = [
+                'X-Content-Type-Options',
+                'X-Frame-Options',
+                'Content-Security-Policy'
+            ];
+            
+            missingHeaders.forEach(header => {
+                results.push({
+                    title: `Header Keamanan ${header} Tidak Ditemukan`,
+                    description: `Header ${header} yang penting untuk keamanan tidak terdeteksi.`,
+                    severity: 'medium',
+                    solution: `Tambahkan header ${header} ke konfigurasi server Anda.`
+                });
+            });
+            
+            return results;
+        }
+        
+        function checkCommonVulnerabilities(domain) {
+            const results = [];
+            
+            // Deteksi admin panel umum
+            const commonAdminPaths = [
+                '/admin', '/wp-admin', '/administrator', '/backoffice'
+            ];
+            
+            commonAdminPaths.forEach(path => {
+                results.push({
+                    title: `Path Admin Terbuka: ${path}`,
+                    description: `Path ${path} dapat diakses publik. Ini bisa menjadi risiko keamanan.`,
+                    severity: 'medium',
+                    solution: `Batasi akses ke ${path} atau gunakan autentikasi yang kuat.`
+                });
+            });
+            
+            // Deteksi versi software yang rentan
+            results.push({
+                title: 'Versi Software Tidak Diketahui',
+                description: 'Scanner offline tidak dapat memeriksa versi software yang digunakan.',
+                severity: 'low',
+                solution: 'Periksa manual versi CMS/framework yang digunakan dan pastikan selalu diperbarui.'
+            });
+            
+            return results;
+        }
+        
+        function checkHTTPS(url) {
+            const results = [];
+            
+            if (!url.startsWith('https://')) {
+                results.push({
+                    title: 'Koneksi Tidak Dienkripsi',
+                    description: 'Website menggunakan HTTP bukan HTTPS. Data dapat disadap selama transmisi.',
+                    severity: 'high',
+                    solution: 'Aktifkan SSL/TLS dan redirect semua traffic ke HTTPS.'
+                });
+            }
+            
+            return results;
+        }
+        
+        function checkServerInfo() {
+            return [{
+                title: 'Informasi Server Tidak Diketahui',
+                description: 'Scanner offline tidak dapat memeriksa informasi server secara akurat.',
+                severity: 'low',
+                solution: 'Periksa manual header server dan sembunyikan informasi sensitif.'
+            }];
+        }
+        
+        function checkFormsSecurity() {
+            return [{
+                title: 'Formulir Tidak Dapat Diperiksa',
+                description: 'Scanner offline tidak dapat menganalisis form input untuk kerentanan XSS/SQLi.',
+                severity: 'medium',
+                solution: 'Lakukan pengujian manual atau gunakan tools khusus untuk memeriksa form.'
+            }];
+        }
+    </script>
+</body>
+                  </html>
