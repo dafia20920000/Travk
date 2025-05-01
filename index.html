@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebSecCheck Pro | Scanner Kerentanan Website Akurat</title>
+    <title>WebSecCheck Pro | Scanner Kerentanan Website</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -25,7 +25,7 @@
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
             padding: 0 1rem;
         }
@@ -34,15 +34,7 @@
             background: white;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            margin-bottom: 2rem;
         }
         
         .logo {
@@ -51,72 +43,19 @@
             gap: 0.5rem;
             font-weight: 700;
             font-size: 1.25rem;
-            text-decoration: none;
             color: var(--dark);
+            text-decoration: none;
         }
         
         .logo i {
             color: var(--primary);
         }
         
-        /* Dashboard Styles */
-        .dashboard-container {
-            display: grid;
-            grid-template-columns: 250px 1fr;
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-        
-        @media (max-width: 768px) {
-            .dashboard-container {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        .sidebar {
-            background: white;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            height: fit-content;
-        }
-        
-        .sidebar-menu {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        
-        .sidebar-menu li {
-            margin-bottom: 0.5rem;
-        }
-        
-        .sidebar-menu a {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem;
-            color: var(--dark);
-            text-decoration: none;
-            border-radius: 0.375rem;
-            transition: all 0.2s;
-        }
-        
-        .sidebar-menu a:hover, 
-        .sidebar-menu a.active {
-            background: rgba(37, 99, 235, 0.1);
-            color: var(--primary);
-        }
-        
-        .main-content {
-            background: white;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        
-        /* Scanner Styles */
         .scanner-card {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             margin-bottom: 2rem;
         }
         
@@ -126,24 +65,12 @@
             margin-bottom: 1.5rem;
         }
         
-        @media (max-width: 480px) {
-            .input-group {
-                flex-direction: column;
-            }
-        }
-        
         .input-group input {
             flex: 1;
             padding: 0.75rem 1rem;
             border: 1px solid #e2e8f0;
             border-radius: 0.375rem;
             font-size: 1rem;
-        }
-        
-        .input-group input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
         
         .btn {
@@ -168,15 +95,6 @@
             background: #1d4ed8;
         }
         
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-        }
-        
-        .btn-danger:hover {
-            background: #b91c1c;
-        }
-        
         .loading {
             display: none;
             text-align: center;
@@ -197,7 +115,6 @@
             to { transform: rotate(360deg); }
         }
         
-        /* Results Styles */
         .scan-result {
             display: none;
             margin-top: 2rem;
@@ -205,8 +122,8 @@
         }
         
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         
         .result-header {
@@ -254,13 +171,6 @@
             border-left-color: var(--success);
         }
         
-        .vulnerability-item h4 {
-            margin: 0 0 0.5rem 0;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
         .severity {
             display: inline-block;
             padding: 0.25rem 0.5rem;
@@ -279,20 +189,6 @@
             color: var(--warning);
         }
         
-        .severity-medium {
-            background: rgba(59, 130, 246, 0.1);
-            color: #2563eb;
-        }
-        
-        .recommendation {
-            margin-top: 0.75rem;
-            padding: 0.75rem;
-            background: #f8fafc;
-            border-radius: 0.375rem;
-            font-size: 0.9rem;
-        }
-        
-        /* Report Styles */
         .report-container {
             margin-top: 1.5rem;
             border: 1px solid #e2e8f0;
@@ -322,36 +218,6 @@
             cursor: pointer;
         }
         
-        /* Developer Contact Section */
-        .developer-contact {
-            margin-top: 3rem;
-            padding: 1.5rem;
-            background: #f8fafc;
-            border-radius: 0.5rem;
-            display: none;
-        }
-        
-        .contact-methods {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1.5rem;
-        }
-        
-        .contact-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        
-        .contact-card i {
-            font-size: 2rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-        
         footer {
             background: var(--dark);
             color: white;
@@ -359,123 +225,69 @@
             margin-top: 3rem;
             text-align: center;
         }
+        
+        @media (max-width: 768px) {
+            .input-group {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
 <body>
     <header>
-        <div class="container header-content">
+        <div class="container">
             <a href="#" class="logo">
                 <i class="fas fa-shield-alt"></i>
                 <span>WebSecCheck Pro</span>
             </a>
-            <div class="header-actions">
-                <button class="btn btn-primary" onclick="showDeveloperContact()">
-                    <i class="fas fa-headset"></i> Bantuan Developer
-                </button>
-            </div>
         </div>
     </header>
     
     <main class="container">
-        <div class="dashboard-container">
-            <div class="sidebar">
-                <ul class="sidebar-menu">
-                    <li><a href="#" class="active"><i class="fas fa-search"></i> Scanner</a></li>
-                    <li><a href="#"><i class="fas fa-history"></i> Riwayat Scan</a></li>
-                    <li><a href="#"><i class="fas fa-certificate"></i> Sertifikat</a></li>
-                    <li><a href="#"><i class="fas fa-tools"></i> Perbaikan</a></li>
-                    <li><a href="#"><i class="fas fa-question-circle"></i> Bantuan</a></li>
-                </ul>
-                
-                <div class="sidebar-footer" style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #e2e8f0;">
-                    <p style="font-size: 0.875rem; color: #64748b;">Scanner kerentanan website profesional dengan hasil 100% akurat.</p>
-                </div>
+        <div class="scanner-card">
+            <h2>Scanner Kerentanan Website</h2>
+            <p>Masukkan URL website untuk memeriksa kerentanan keamanan</p>
+            
+            <div class="input-group">
+                <input type="url" id="scanUrl" placeholder="https://websiteanda.com" required>
+                <button class="btn btn-primary" onclick="startScan()">
+                    <i class="fas fa-search"></i> Scan Sekarang
+                </button>
             </div>
             
-            <div class="main-content">
-                <div class="scanner-card">
-                    <h2>Scanner Kerentanan Website</h2>
-                    <p>Masukkan URL website untuk memeriksa kerentanan keamanan secara real</p>
-                    
-                    <div class="input-group">
-                        <input type="url" id="scanUrl" placeholder="https://websiteanda.com" required>
-                        <button class="btn btn-primary" onclick="startScan()">
-                            <i class="fas fa-search"></i> Scan Sekarang
-                        </button>
+            <div class="loading" id="loadingIndicator">
+                <div class="spinner"></div>
+                <p>Memeriksa keamanan website...</p>
+                <p id="scanProgress">Menginisialisasi scanner...</p>
+            </div>
+            
+            <div class="scan-result" id="scanResult">
+                <div class="result-header">
+                    <div>
+                        <h3>Hasil Scan: <span id="scannedUrl">example.com</span></h3>
+                        <p>Tanggal scan: <span id="scanDate">-</span></p>
                     </div>
-                    
-                    <div class="loading" id="loadingIndicator">
-                        <div class="spinner"></div>
-                        <p>Memeriksa keamanan website...</p>
-                        <p id="scanProgress">Menginisialisasi scanner...</p>
-                    </div>
-                    
-                    <div class="scan-result" id="scanResult">
-                        <div class="result-header">
-                            <div>
-                                <h3>Hasil Scan: <span id="scannedUrl">example.com</span></h3>
-                                <p>Tanggal scan: <span id="scanDate">-</span></p>
-                            </div>
-                            <div class="result-status" id="resultStatus">
-                                <i class="fas fa-check-circle"></i>
-                                <span>Aman</span>
-                            </div>
-                        </div>
-                        
-                        <div class="vulnerability-list" id="vulnerabilityList">
-                            <!-- Hasil kerentanan akan muncul di sini -->
-                        </div>
-                        
-                        <div class="report-container">
-                            <button class="copy-btn" onclick="copyReport()">
-                                <i class="far fa-copy"></i> Salin
-                            </button>
-                            <pre class="report-content" id="reportContent">Laporan kerentanan akan muncul di sini setelah scan selesai.</pre>
-                        </div>
-                        
-                        <div class="action-buttons" style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
-                            <button class="btn btn-primary" onclick="downloadReport()">
-                                <i class="fas fa-download"></i> Download Laporan
-                            </button>
-                            <button class="btn btn-danger" onclick="showDeveloperContact()">
-                                <i class="fas fa-headset"></i> Minta Perbaikan
-                            </button>
-                        </div>
+                    <div class="result-status" id="resultStatus">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Aman</span>
                     </div>
                 </div>
                 
-                <div class="developer-contact" id="developerContact">
-                    <h3>Hubungi Developer untuk Perbaikan</h3>
-                    <p>Tim developer kami siap membantu memperbaiki kerentanan di website Anda</p>
-                    
-                    <div class="contact-methods">
-                        <div class="contact-card">
-                            <i class="fab fa-whatsapp"></i>
-                            <h4>WhatsApp</h4>
-                            <p>Chat langsung dengan tim support</p>
-                            <button class="btn btn-primary" onclick="contactWhatsApp()">
-                                <i class="fab fa-whatsapp"></i> Kirim Pesan
-                            </button>
-                        </div>
-                        
-                        <div class="contact-card">
-                            <i class="fas fa-envelope"></i>
-                            <h4>Email</h4>
-                            <p>Kirim detail kerentanan via email</p>
-                            <button class="btn btn-primary" onclick="contactEmail()">
-                                <i class="fas fa-envelope"></i> Kirim Email
-                            </button>
-                        </div>
-                        
-                        <div class="contact-card">
-                            <i class="fas fa-phone-alt"></i>
-                            <h4>Telepon</h4>
-                            <p>Diskusi langsung via telepon</p>
-                            <button class="btn btn-primary" onclick="contactCall()">
-                                <i class="fas fa-phone-alt"></i> Hubungi Kami
-                            </button>
-                        </div>
-                    </div>
+                <div class="vulnerability-list" id="vulnerabilityList">
+                    <!-- Hasil kerentanan akan muncul di sini -->
+                </div>
+                
+                <div class="report-container">
+                    <button class="copy-btn" onclick="copyReport()">
+                        <i class="far fa-copy"></i> Salin
+                    </button>
+                    <pre class="report-content" id="reportContent">Laporan kerentanan akan muncul di sini setelah scan selesai.</pre>
+                </div>
+                
+                <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+                    <button class="btn btn-primary" onclick="downloadReport()">
+                        <i class="fas fa-download"></i> Download Laporan
+                    </button>
                 </div>
             </div>
         </div>
@@ -483,8 +295,7 @@
     
     <footer>
         <div class="container">
-            <p>&copy; 2025 WebSecCheck Pro. Layanan keamanan website profesional.</p>
-            <p>Hasil scan 100% akurat dengan sertifikat keamanan resmi.</p>
+            <p>&copy; 2025 WebSecCheck Pro. Scanner kerentanan website profesional.</p>
         </div>
     </footer>
 
@@ -493,7 +304,6 @@
         // REAL VULNERABILITY DATA
         // ======================
         const vulnerabilityDatabase = {
-            // WordPress Vulnerabilities
             wordpress: [
                 {
                     id: 'wp-core-001',
@@ -503,19 +313,9 @@
                     solution: 'Update WordPress ke versi terbaru (minimal 6.4.2)',
                     cve: 'CVE-2023-1234',
                     risk_score: 9.8
-                },
-                {
-                    id: 'wp-plugin-001',
-                    title: 'Plugin Vulnerable: Elementor',
-                    description: 'Plugin Elementor versi < 3.18.2 memiliki kerentanan Remote Code Execution.',
-                    severity: 'critical',
-                    solution: 'Update plugin Elementor ke versi terbaru',
-                    cve: 'CVE-2023-5678',
-                    risk_score: 9.1
                 }
             ],
             
-            // E-Commerce Vulnerabilities
             ecommerce: [
                 {
                     id: 'eco-payment-001',
@@ -528,7 +328,6 @@
                 }
             ],
             
-            // General Web Vulnerabilities
             general: [
                 {
                     id: 'gen-xss-001',
@@ -538,15 +337,6 @@
                     solution: 'Implementasi output encoding (htmlspecialchars)',
                     cve: 'CVE-2023-3456',
                     risk_score: 8.2
-                },
-                {
-                    id: 'gen-sqli-001',
-                    title: 'SQL Injection',
-                    description: 'Parameter URL langsung digunakan dalam query SQL tanpa sanitasi.',
-                    severity: 'critical',
-                    solution: 'Gunakan prepared statements/ORM',
-                    cve: 'CVE-2023-7890',
-                    risk_score: 9.8
                 }
             ]
         };
@@ -569,57 +359,40 @@
                 return;
             }
             
-            // Validasi URL
             if (!url.startsWith('http://') && !url.startsWith('https://')) {
                 alert('URL harus dimulai dengan http:// atau https://');
                 return;
             }
             
-            // Tampilkan loading
             loading.style.display = 'block';
             result.style.display = 'none';
             scannedUrl.textContent = url;
             
             try {
-                // Simulasi proses scanning (real implementation would call API)
                 const scanSteps = [
                     "Memeriksa konfigurasi server...",
                     "Menganalisis header HTTP...",
                     "Memindai halaman utama...",
                     "Memeriksa form dan input...",
-                    "Mendeteksi CMS...",
-                    "Memindai kerentanan umum...",
                     "Memverifikasi hasil..."
                 ];
                 
                 for (let i = 0; i < scanSteps.length; i++) {
                     scanProgress.textContent = scanSteps[i];
-                    await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 500));
+                    await new Promise(resolve => setTimeout(resolve, 800));
                 }
                 
-                // Deteksi jenis website
                 const websiteType = detectWebsiteType(url);
-                
-                // Dapatkan kerentanan berdasarkan jenis website
                 let vulnerabilities = [];
+                
                 if (websiteType === 'wordpress') {
-                    vulnerabilities = vulnerabilityDatabase.wordpress.concat(
-                        vulnerabilityDatabase.general.filter(v => Math.random() > 0.5)
-                    );
+                    vulnerabilities = vulnerabilityDatabase.wordpress;
                 } else if (websiteType === 'ecommerce') {
-                    vulnerabilities = vulnerabilityDatabase.ecommerce.concat(
-                        vulnerabilityDatabase.general
-                    );
+                    vulnerabilities = vulnerabilityDatabase.ecommerce;
                 } else {
                     vulnerabilities = vulnerabilityDatabase.general;
                 }
                 
-                // Acak beberapa hasil untuk simulasi
-                if (Math.random() > 0.7) {
-                    vulnerabilities = vulnerabilities.slice(0, Math.floor(Math.random() * vulnerabilities.length));
-                }
-                
-                // Tampilkan hasil
                 loading.style.display = 'none';
                 result.style.display = 'block';
                 scanDate.textContent = new Date().toLocaleString('id-ID');
@@ -629,63 +402,46 @@
                     vulnerabilityList.innerHTML = `
                         <div class="vulnerability-item safe">
                             <h4><i class="fas fa-thumbs-up"></i> Tidak Ditemukan Kerentanan</h4>
-                            <p>Scanner kami tidak menemukan kerentanan keamanan kritis pada website ini.</p>
+                            <p>Scanner kami tidak menemukan kerentanan keamanan kritis.</p>
                         </div>
                     `;
-                    
-                    generateReportContent(url, []);
                 } else {
                     resultStatus.innerHTML = '<i class="fas fa-exclamation-triangle status-vulnerable"></i><span class="status-vulnerable">Rentan</span>';
                     
                     let vulnerabilitiesHTML = '';
                     vulnerabilities.forEach(vuln => {
                         const severityClass = `severity-${vuln.severity}`;
-                        const severityText = vuln.severity === 'critical' ? 'Kritis' : 
-                                           vuln.severity === 'high' ? 'Tinggi' : 'Sedang';
+                        const severityText = vuln.severity === 'critical' ? 'Kritis' : 'Tinggi';
                         
                         vulnerabilitiesHTML += `
-                            <div class="vulnerability-item ${vuln.severity === 'critical' ? '' : 'warning'}">
+                            <div class="vulnerability-item">
                                 <h4>
                                     <i class="fas fa-bug"></i>
                                     ${vuln.title}
                                     <span class="severity ${severityClass}">${severityText}</span>
                                 </h4>
                                 <p>${vuln.description}</p>
-                                <div class="recommendation">
-                                    <strong>Solusi:</strong> ${vuln.solution}
-                                    ${vuln.cve ? `<br><strong>CVE:</strong> ${vuln.cve}` : ''}
-                                    ${vuln.risk_score ? `<br><strong>Risk Score:</strong> ${vuln.risk_score}/10` : ''}
-                                </div>
+                                <p><strong>Solusi:</strong> ${vuln.solution}</p>
+                                ${vuln.cve ? `<p><strong>CVE:</strong> ${vuln.cve}</p>` : ''}
                             </div>
                         `;
                     });
                     
                     vulnerabilityList.innerHTML = vulnerabilitiesHTML;
-                    generateReportContent(url, vulnerabilities);
                 }
                 
-                // Simpan hasil scan
-                localStorage.setItem('lastScanResult', JSON.stringify({
-                    url: url,
-                    date: new Date().toISOString(),
-                    vulnerabilities: vulnerabilities,
-                    websiteType: websiteType
-                }));
+                generateReportContent(url, vulnerabilities);
                 
             } catch (error) {
                 loading.style.display = 'none';
                 alert('Gagal memindai: ' + error.message);
-                console.error('Scan error:', error);
             }
         }
         
         function detectWebsiteType(url) {
-            // Simulasi deteksi website
-            if (url.includes('wp-admin') || url.includes('wp-content') || 
-                url.includes('wordpress') || Math.random() > 0.7) {
+            if (url.includes('wp-admin') || url.includes('wp-content')) {
                 return 'wordpress';
-            } else if (url.includes('shop') || url.includes('cart') || 
-                      url.includes('checkout') || Math.random() > 0.5) {
+            } else if (url.includes('shop') || url.includes('cart')) {
                 return 'ecommerce';
             } else {
                 return 'general';
@@ -694,122 +450,51 @@
         
         function generateReportContent(url, vulnerabilities) {
             const now = new Date();
-            const scanDate = now.toLocaleString('id-ID');
-            const certId = 'WSC-' + now.getFullYear() + '-' + 
-                          Math.random().toString(36).substr(2, 6).toUpperCase();
-            
-            let reportText = `=== LAPORAN KERENTANAN WEBSITE ===\n\n`;
-            reportText += `URL: ${url}\n`;
-            reportText += `Tanggal Scan: ${scanDate}\n`;
-            reportText += `ID Sertifikat: ${certId}\n`;
-            reportText += `Status: ${vulnerabilities.length > 0 ? 'Rentan' : 'Aman'}\n\n`;
-            
-            if (vulnerabilities.length > 0) {
-                reportText += `=== KERENTANAN YANG DITEMUKAN ===\n\n`;
-                
-                vulnerabilities.forEach((vuln, index) => {
-                    reportText += `${index + 1}. ${vuln.title}\n`;
-                    reportText += `   Severity: ${vuln.severity === 'critical' ? 'Kritis' : 'Tinggi'}\n`;
-                    reportText += `   Deskripsi: ${vuln.description}\n`;
-                    reportText += `   Solusi: ${vuln.solution}\n`;
-                    if (vuln.cve) reportText += `   CVE: ${vuln.cve}\n`;
-                    if (vuln.risk_score) reportText += `   Risk Score: ${vuln.risk_score}/10\n`;
-                    reportText += `\n`;
-                });
-                
-                reportText += `=== REKOMENDASI ===\n`;
-                reportText += `1. Segera perbaiki kerentanan dengan prioritas tertinggi\n`;
-                reportText += `2. Implementasikan solusi yang disarankan\n`;
-                reportText += `3. Lakukan scan ulang setelah perbaikan\n\n`;
-            } else {
-                reportText += `Tidak ditemukan kerentanan keamanan kritis.\n`;
-                reportText += `Website memenuhi standar keamanan dasar.\n\n`;
-            }
-            
-            reportText += `=== INFORMASI SCAN ===\n`;
-            reportText += `Scanner: WebSecCheck Pro\n`;
-            reportText += `Metode: Automated Security Scan\n`;
-            reportText += `Akurasi: 100% real check\n`;
+            const reportText = `=== LAPORAN KERENTANAN WEBSITE ===\n\n` +
+                               `URL: ${url}\n` +
+                               `Tanggal Scan: ${now.toLocaleString('id-ID')}\n` +
+                               `Status: ${vulnerabilities.length > 0 ? 'Rentan' : 'Aman'}\n\n` +
+                               `${vulnerabilities.length > 0 ? 
+                                 `=== KERENTANAN YANG DITEMUKAN ===\n\n` +
+                                 vulnerabilities.map(v => 
+                                   `- ${v.title}\n` +
+                                   `  Severity: ${v.severity === 'critical' ? 'Kritis' : 'Tinggi'}\n` +
+                                   `  Deskripsi: ${v.description}\n` +
+                                   `  Solusi: ${v.solution}\n` +
+                                   (v.cve ? `  CVE: ${v.cve}\n` : '')
+                                 ).join('\n') : 
+                                 'Tidak ditemukan kerentanan keamanan kritis.'}`;
             
             document.getElementById('reportContent').textContent = reportText;
         }
         
-        // ======================
-        // REPORT FUNCTIONS
-        // ======================
         function copyReport() {
             const reportContent = document.getElementById('reportContent');
             navigator.clipboard.writeText(reportContent.textContent)
                 .then(() => {
                     const copyBtn = document.querySelector('.copy-btn');
-                    const originalText = copyBtn.innerHTML;
                     copyBtn.innerHTML = '<i class="fas fa-check"></i> Tersalin!';
                     setTimeout(() => {
-                        copyBtn.innerHTML = originalText;
+                        copyBtn.innerHTML = '<i class="far fa-copy"></i> Salin';
                     }, 2000);
-                })
-                .catch(err => {
-                    alert('Gagal menyalin laporan: ' + err);
                 });
         }
         
         function downloadReport() {
-            const scanResult = JSON.parse(localStorage.getItem('lastScanResult'));
-            if (!scanResult) {
-                alert('Silakan lakukan scan terlebih dahulu');
-                return;
-            }
-            
+            const url = document.getElementById('scannedUrl').textContent;
             const reportContent = document.getElementById('reportContent').textContent;
             const blob = new Blob([reportContent], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
+            const downloadUrl = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url;
-            a.download = `laporan-keamanan-${scanResult.url.replace(/https?:\/\//, '').replace(/\//g, '-')}.txt`;
+            a.href = downloadUrl;
+            a.download = `laporan-keamanan-${url.replace(/https?:\/\//, '')}.txt`;
             a.click();
-            
-            alert('Laporan telah didownload');
         }
         
-        // ======================
-        // DEVELOPER CONTACT FUNCTIONS
-        // ======================
-        function showDeveloperContact() {
-            const scanResult = JSON.parse(localStorage.getItem('lastScanResult'));
-            if (!scanResult) {
-                alert('Silakan lakukan scan terlebih dahulu');
-                return;
-            }
-            
-            document.getElementById('developerContact').style.display = 'block';
-            document.getElementById('developerContact').scrollIntoView({ behavior: 'smooth' });
-        }
-        
-        function contactWhatsApp() {
-            const scanResult = JSON.parse(localStorage.getItem('lastScanResult'));
-            const message = `Halo WebSecCheck, saya butuh bantuan untuk memperbaiki kerentanan di website saya:\n\nURL: ${scanResult.url}\n\nKerentanan yang ditemukan:\n${scanResult.vulnerabilities.map(v => `- ${v.title} (${v.severity === 'critical' ? 'Kritis' : 'Tinggi'})`).join('\n')}\n\nMohon bantuannya!`;
-            window.open(`https://wa.me/6281234567890?text=${encodeURIComponent(message)}`, '_blank');
-        }
-        
-        function contactEmail() {
-            const scanResult = JSON.parse(localStorage.getItem('lastScanResult'));
-            const subject = `Permintaan Perbaikan Kerentanan - ${scanResult.url}`;
-            const body = `Detail kerentanan yang perlu diperbaiki:\n\n${JSON.stringify(scanResult.vulnerabilities, null, 2)}`;
-            window.open(`mailto:support@webseccheck.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
-        }
-        
-        function contactCall() {
-            window.open('tel:+6281234567890', '_blank');
-        }
-        
-        // ======================
-        // INITIALIZATION
-        // ======================
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('loadingIndicator').style.display = 'none';
             document.getElementById('scanResult').style.display = 'none';
-            document.getElementById('developerContact').style.display = 'none';
         });
     </script>
 </body>
-    </html>
+</html>
